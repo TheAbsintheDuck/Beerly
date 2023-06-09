@@ -1,0 +1,91 @@
+﻿@page
+@model Backend_Task03.Pages.Beers.CreateModel
+
+
+@{
+	ViewData["Title"] = "Create";
+}
+<div class="adminGrid">
+	<h1>Create Beer</h1>
+
+	<hr />
+	<div class="editBeerGrid">
+		<div class="col-md-4">
+			<form method="post" enctype="multipart/form-data">
+				<input type="file" name="photo" id="photo" onchange="previewImage();">
+				<img id="preview" src="" alt="Image preview" style="max-width: 200px; max-height: 200px;">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="Beer.Name" class="control-label"></label>
+					<input asp-for="Beer.Name" class="form-control" />
+					<span asp-validation-for="Beer.Name" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Beer.Description" class="control-label"></label>
+					<textarea asp-for="Beer.Description" class="form-control"></textarea>
+					<span asp-validation-for="Beer.Description" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Beer.Type" class="control-label"></label>
+					<input asp-for="Beer.Type" class="form-control" />
+					<span asp-validation-for="Beer.Type" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+
+
+					<label asp-for="Beer.Percentage" type="number" class="control-label"></label>
+					<input asp-for="Beer.Percentage" type="number" min="0" step="0.1" max="15" class="form-control" />
+					<span asp-validation-for="Beer.Percentage" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Beer.Brewery" class="control-label"></label>
+					<input asp-for="Beer.Brewery" class="form-control" />
+					<span asp-validation-for="Beer.Brewery" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Beer.Country" class="control-label"></label>
+					<select asp-for="Beer.Country" asp-items="@(new SelectList(Data.SampleData.CountryData))" class="form-control">
+					</select>
+					<span asp-validation-for="Beer.Country" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Beer.EAN13" class="control-label"></label>
+					<input asp-for="Beer.EAN13" class="form-control" />
+					<span asp-validation-for="Beer.EAN13" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<button type="submit" value="Create" class="btn btn-primary">Create</button>
+				</div>
+			</form>
+			<div>
+				<button type="button" onclick="location.href='@Url.Page("Index")'">Back to List</button>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
+
+<script>
+	function previewImage() {
+		var file = document.getElementById("photo").files[0];
+		var reader = new FileReader();
+
+		reader.onloadend = function () {
+			document.getElementById('preview').src = reader.result;
+		}
+
+		if (file) {
+			reader.readAsDataURL(file);
+		} else {
+			document.getElementById('preview').src = "";
+		}
+	}
+</script>

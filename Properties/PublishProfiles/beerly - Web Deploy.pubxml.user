@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAzqWv2Jrag0KxtjkDGYFgvQAAAAACAAAAAAAQZgAAAAEAACAAAABwCgtdWPviyZZ/sc/6bLWdqsO3buAE6N11sF2tGGo/cgAAAAAOgAAAAAIAACAAAAAWsNdYVYAhDE9wiFYIqagh2AXquuPtIy6v2BJRei5eu4AAAADLXaWcKcRVM2pjnPBoO++iRByP2m8CQIbI8FT5lB+jfxnCvohSi+kOv9S1o0jQtN1vvYLCxdy5QPaVhjdaXgkDJmCw47uDs7KEkrMaMC45YGJY9o+0mU+plbXwY9QwXG7MMBq4C69b6hBcgWt6GXcuuRf34Ox/yuWoC5ZmIRHVDkAAAAAlH9AhLp5Jjg3sJ1QHJJLytCT6VHXWczFCtxrJzDcKCkIUJu2UwSs4trii8wh59W/9szVo1GV09YPDzVv5TNdm</EncryptedPassword>
+    <History>True|2023-06-03T11:45:45.1562367Z;True|2023-05-30T19:55:46.3696891+02:00;True|2023-05-28T16:23:01.7048489+02:00;True|2023-05-25T18:41:33.0340289+02:00;True|2023-05-23T13:27:40.2136862+02:00;True|2023-05-23T12:15:06.5478099+02:00;True|2023-05-23T11:03:21.3695554+02:00;True|2023-05-16T15:18:56.7660630+02:00;True|2023-05-16T15:07:56.5526283+02:00;False|2023-05-16T15:02:41.3602785+02:00;False|2023-05-16T14:15:00.2592217+02:00;False|2023-05-16T13:40:50.0809594+02:00;False|2023-05-16T13:31:25.3579445+02:00;False|2023-05-16T13:28:50.3396087+02:00;False|2023-05-16T13:25:40.4094248+02:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <EFMigrations Include="Backend_Task03.Data.AppDbContext">
+      <Value>Data Source=tcp:beerly.database.windows.net,1433%3bInitial Catalog=beerlyDB%3bUser Id=beerlyAdmin%40beerly%3bPassword=Manunited92</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

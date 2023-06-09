@@ -1,0 +1,69 @@
+@page
+@model Backend_Task03.Pages.Accounts.EditModel
+@inject Backend_Task03.Data.AccessControl AccessControl
+
+@{
+	ViewData["Title"] = "Edit";
+}
+<div class="adminGrid">
+@if (AccessControl.LoggedInAccount.Role == "Admin" || AccessControl.LoggedInAccount.ID == Model.Account?.ID)
+{
+	<h1>Edit</h1>
+
+	<h4>Account</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form method="post">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<input type="hidden" asp-for="Account.ID" />
+				@if (AccessControl.LoggedInAccountRole == "Admin")
+				{
+					<div class="form-group">
+						<label asp-for="Account.OpenIDIssuer" class="control-label"></label>
+						<input asp-for="Account.OpenIDIssuer" class="form-control" />
+						<span asp-validation-for="Account.OpenIDIssuer" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="Account.OpenIDSubject" class="control-label"></label>
+						<input asp-for="Account.OpenIDSubject" class="form-control" />
+						<span asp-validation-for="Account.OpenIDSubject" class="text-danger"></span>
+					</div>
+				}
+				<div class="form-group">
+					<label asp-for="Account.Name" class="control-label"></label>
+					<input asp-for="Account.Name" class="form-control" />
+					<span asp-validation-for="Account.Name" class="text-danger"></span>
+				</div>
+				@if (AccessControl.LoggedInAccountRole == "Admin")
+				{
+					<div class="form-group">
+						<label asp-for="Account.Role" class="control-label"></label>
+						<input asp-for="Account.Role" class="form-control" />
+						<span asp-validation-for="Account.Role" class="text-danger"></span>
+					</div>
+				}
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div>
+		<button type="button" onclick="location.href='/Accounts/Details?id=@AccessControl.LoggedInAccountID'">Back to Details</button>
+	</div>
+
+	@section Scripts {
+	@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}
+}
+else
+{
+	<h1>
+		"ACCESS DENIED"
+	</h1>
+}
+</div>

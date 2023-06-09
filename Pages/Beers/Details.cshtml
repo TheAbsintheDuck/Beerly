@@ -1,0 +1,226 @@
+﻿@page
+@model Backend_Task03.Pages.Beers.DetailsModel
+@inject Backend_Task03.Data.AccessControl AccessControl
+
+@{
+	ViewData["Title"] = "Details";
+}
+
+<script type="module" src="~/js/pizza-search.js" asp-append-version="true" defer></script>
+
+<div id="beerDetailsContainer">
+	<div id="beerGrid">
+		<div id="beerGridCell">
+			<div id="beerGridCellRow1">
+				<h3 id="beerGridCellRowName">@Html.DisplayFor(model => model.Beer.Name) (@Html.DisplayFor(model => model.Beer.Country))</h3>
+			</div>
+			<div id="beerGridCellRow2">
+				@Html.DisplayFor(model => model.Beer.Brewery)
+			</div>
+			<div id="beerGridCellImage">
+				@if (Model.Beer.PhotoPath == "")
+				{
+					<img id="smBeerImage" src="~/imagesBeerly/@(Model.Beer.Name).png" width="100px" />
+				}
+				else
+				{
+					<img id="smBeerImage" src="@(Model.Beer.PhotoPath)" width="100px" />
+				}
+			</div>
+			<div id="beerGridCellRow3">
+				@Html.DisplayFor(model => model.Beer.Description)
+			</div>
+			<div id="beerGridCellRow4">
+				@Html.DisplayFor(model => model.Beer.Percentage)%
+			</div>
+			<div id="beerGridCellRow5">
+				@Html.DisplayFor(model => model.Beer.Type)
+			</div>
+
+			<div class="beerFavoriteCell">
+				<form asp-page-handler="ToggleFavorite" method="post">
+					<input type="hidden" name="beerId" value="@Model.Beer.ID" />
+					<input type="checkbox" id="beer@(Model.Beer.ID)Checkbox" class="beerFavoriteCheckbox visually-hidden" @(Model.IsFavorite(Model.Beer.ID) ? "checked" : "") onchange="this.form.submit()" />
+					<label for="beer@(Model.Beer.ID)Checkbox" class="beerFavoriteLabel">
+						<span class="unfilledStar">
+							<img class="beerlyStar" src="~/imagesBeerly/beerlyStarLH.png" alt="Not Filled Star">
+						</span>
+						<span class="filledStar">
+							<img class="beerlyStar" class="checked" src="~/imagesBeerly/beerlyStarFav.png" alt="Filled Star">
+						</span>
+					</label>
+				</form>
+
+				<script>
+					document.addEventListener('DOMContentLoaded', function () {
+						const checkboxes = document.querySelectorAll('.beerFavoriteCheckbox');
+
+						checkboxes.forEach(function (checkbox) {
+							const label = checkbox.nextElementSibling;
+
+							checkbox.addEventListener('change', function () {
+								const starUnselected = label.querySelector('.beerlyStar');
+								const starSelected = label.querySelector('.beerlyStar.checked');
+
+								if (checkbox.checked) {
+									starUnselected.style.display = 'none';
+									starSelected.style.display = 'grid';
+								} else {
+									starUnselected.style.display = 'grid';
+									starSelected.style.display = 'none';
+								}
+							});
+						});
+					});
+				</script>
+			</div>
+
+			<div id="beerGridCellRow6">
+				<p id="goesWithFood" hidden>
+					@Html.DisplayFor(model=>
+					model.Beer.GoesWellWith)
+				</p>
+				@foreach (var food in new[] { "Chicken", "Meat", "Fish", "Vegetarian", "Dessert" })
+				{
+					if (Model.Beer.GoesWellWith.Contains(food))
+					{
+						<img asp-append-version="true" name="Goesw" value="@food" src="../images/@(food.ToLower()).svg" style="width: 22px" />
+					}
+				}
+			</div>
+
+			<div id="beerGridCellRow7">
+				<p id="beerGridCellRow7Text">Our users give this beer a rating average of:</p>
+				@for (int i = 0; i < 5; i++)
+				{
+					@if (Model.Beer.Rating != null)
+					{
+						<img class="row7@($"glass{i + 1}")" asp-append-version="true"
+					 src="@($"../images/{(i < Math.Floor((decimal)Model.Beer.Rating) ? "filled" : "empty")}.svg")"
+					 style="width: 30px" />
+
+					}
+				}
+			</div>
+		</div>
+
+		<div id="pizzaWithBeer">
+			<h3 id="pizzaBeerHead">This pizza goes well with your chosen beer:</h3>
+			<div id="recommendation" hidden></div>
+			<p id="message" hidden>Unfortunately, no pizzas could be retrieved</p>
+		</div>
+
+		<div id="beerCRUDButtons">
+			@if (AccessControl.LoggedInAccountRole == "Admin")
+			{
+				<button type="button" onclick="location.href='@Url.Page("./Edit2", new { id = Model.Beer?.ID,  name = Model.Beer?.Name })'">Edit</button>
+			}
+			<button type="button" onclick="location.href='@Url.Page("./Index")'">Back to List</button>
+		</div>
+	</div>
+
+	<div id="beerReviewContainer">
+		<div id="beerAddReview">
+			<h4>Add a Review</h4>
+			<form method="post">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label asp-for="NewReview.Rating" class="control-label"></label>
+					<div>
+						<label><input type="radio" name="Rating" value="1" /> 1</label>
+						<label><input type="radio" name="Rating" value="2" /> 2</label>
+						<label><input type="radio" name="Rating" value="3" /> 3</label>
+						<label><input type="radio" name="Rating" value="4" /> 4</label>
+						<label><input type="radio" name="Rating" value="5" /> 5</label>
+					</div>
+				</div>
+
+				<div id="beerAddReviewComment" class="form-group">
+					<p><label asp-for="NewReview.Comment" class="control-label"></label></p>
+					<textarea asp-for="NewReview.Comment" placeholder="Enter comment..." name="Comment" class="form-control"></textarea>
+					<span asp-validation-for="NewReview.Comment" class="text-danger"></span>
+				</div>
+
+				<div id="beerAddReviewGoes" class="form-group">
+					<p>This beer goes well with:</p>
+					<label>
+						<input type="checkbox" name="food" value="Meat" />
+						<img src="../images/meat.svg" asp-append-version="true" style="width: 22px" />
+					</label>
+
+					<label>
+						<input type="checkbox" name="food" value="Chicken" />
+						<img src="../images/chicken.svg" asp-append-version="true" style="width: 22px" />
+					</label>
+
+					<label>
+						<input type="checkbox" name="food" value="Fish" />
+						<img src="../images/fish.svg" asp-append-version="true" style="width: 22px" />
+					</label>
+
+					<label>
+						<input type="checkbox" name="food" value="Vegetarian" />
+						<img src="../images/vegetarian.svg" asp-append-version="true" style="width: 22px" />
+					</label>
+
+					<label>
+						<input type="checkbox" name="food" value="Dessert" />
+						<img src="../images/dessert.svg" asp-append-version="true" style="width: 22px" />
+					</label>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Post" class="btn btn-primary" id="postButton" />
+				</div>
+			</form>
+		</div>
+
+		<div id="beerReviewCell">
+			@if (Model.Beer != null && Model.Beer.Reviews != null && Model.Beer.Reviews.Count > 0)
+			{
+				var sortedReviews = Model.Beer.Reviews.OrderBy(comment => comment.Created);
+
+				<h4>Reviews</h4>
+				@foreach (var comment in sortedReviews)
+				{
+					@if (@comment.Comment != null && @comment.Rating != 0)
+					{
+						<div id="reviewGridCell">
+							<p>@comment.Account.Name said:</p>
+							<em>"@comment.Comment"</em><p> And rated it @comment.Rating / 5!</p>
+							<p>@comment.Created.ToString("yyyy-MM-dd HH:mm")</p>
+						</div>
+					}
+
+					@if (@comment.Comment != null && @comment.Rating == 0)
+					{
+						<div id="reviewGridCell">
+							<p>@comment.Account.Name said:</p>
+							<em>"@comment.Comment"</em> About this beer
+							<p>@comment.Created.ToString("yyyy-MM-dd HH:mm")</p>
+						</div>
+					}
+					@if (@comment.Comment == null && @comment.Rating != 0)
+					{
+						<div id="reviewGridCell">
+							<h3>@comment.Beer.Name</h3>
+							<p>@comment.Account.Name</p>
+							<p>Rated @comment.Rating / 5!</p>
+							<p>@comment.Created.ToString("yyyy-MM-dd HH:mm")</p>
+						</div>
+					}
+				}
+			}
+
+			else
+			{
+				<p>No reviews yet.</p>
+			}
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

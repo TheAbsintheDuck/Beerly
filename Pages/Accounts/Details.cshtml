@@ -1,0 +1,138 @@
+﻿@page
+@model Backend_Task03.Pages.Accounts.DetailsModel
+@inject Backend_Task03.Data.AccessControl AccessControl
+
+@{
+	ViewData["Title"] = "Details";
+}
+
+@if (AccessControl.LoggedInAccount.Role == "Admin" || AccessControl.LoggedInAccount.ID == Model.Account?.ID)
+{
+	<div class="normalBody">
+		<div id="accountBodyGrid">
+			<div id="accountleftGrid">
+				<h2>Account</h2>
+				<div id="accountDetailContainer">
+					<h3>Name</h3>
+					<p id="accountName">
+						@Html.DisplayFor(model => model.Account.Name)
+					</p>
+					<h3>Role</h3>
+					<p id="accountRole">
+						@Html.DisplayFor(model => model.Account.Role)
+					</p>
+					<form asp-page="./Edit" asp-route-id="@Model.Account?.ID">
+						<button type="submit">Details</button>
+					</form>
+					@if (AccessControl.LoggedInAccountRole == "Admin")
+					{
+						<a asp-page="./Index">Back to List</a>
+					}
+				</div>
+
+			</div>
+			<div id="accountmidGrid">
+				<h2>Favorite Beers</h2>
+				@foreach (var item in Model.Account.FavoriteBeers)
+				{
+					<div class="beerIndexCell">
+						<h3 id="beerName">@Html.DisplayFor(modelItem => item.Name)</h3>
+
+						<p id="beerCountry">(@Html.DisplayFor(modelItem => item.Country))</p>
+
+						<p id="beerBrewery">@Html.DisplayFor(modelItem => item.Brewery)</p>
+
+						<p id="beerPercentage">@Html.DisplayFor(modelItem => item.Percentage)%</p>
+
+						<div id="beerImage">
+							@if (item.PhotoPath == "")
+							{
+								<img id="smBeerImage" src="~/imagesBeerly/@(item.Name).png" width="100px" />
+							}
+							else
+							{
+								<img id="smBeerImage" src="@(item.PhotoPath)" width="100px" />
+							}
+						</div>
+
+						<p id="beerType">@Html.DisplayFor(modelItem => item.Type)</p>
+
+						<div id="beerGoesWellWith">
+							@foreach (var food in new[] { "Chicken", "Meat", "Fish", "Vegetarian", "Dessert" })
+							{
+								if (item.GoesWellWith.Contains(food))
+								{
+									<img asp-append-version="true" name="Goesw" value="@food" src="../images/@(food.ToLower()).svg" style="width: 22px" />
+								}
+							}
+						</div>
+
+						<div id="beerRating">
+							<p id="ratingText">Our users give this beer a rating average of:</p>
+							@for (int i = 0; i < 5; i++)
+							{
+								<img class="row7@($"glass{i + 1}")" asp-append-version="true"
+						 src="@($"../images/{(item.Rating >= i + 0.5 ? "filled" : "empty")}.svg")" style="width: 30px" />
+							}
+
+						</div>
+						<button type="button" id="beerDetailsButton" onclick="location.href='@Url.Page("/Beers/Details", new { id = item.ID, name = item.Name })'">Details</button>
+					</div>
+				}
+			</div>
+
+			<div id="accountrightGrid">
+				<h2>Reviews</h2>
+
+				@foreach (var review in Model.AccountReviews)
+				{
+					@if (@review.Comment != null && @review.Rating != 0)
+					{
+						<div id="reviewGridCell">
+							<h3>@review.Beer.Name</h3>
+							<p>@review.Account.Name said:</p>
+							<em>"@review.Comment"</em>
+							<p>And rated it @review.Rating / 5!</p>
+							<p>@review.Created.ToString("yyyy-MM-dd HH:mm")</p>
+							<form method="post">
+								<button type="submit" asp-page-handler="Delete" asp-route-id="@review.ID" class="btn btn-danger">Delete</button>
+							</form>
+						</div>
+					}
+
+					@if (@review.Comment != null && @review.Rating == 0)
+					{
+						<div id="reviewGridCell">
+							<h3>@review.Beer.Name</h3>
+							<p>@review.Account.Name said:</p>
+							<em>"@review.Comment"</em>
+							<p>About this beer</p>
+							<p>@review.Created.ToString("yyyy-MM-dd HH:mm")</p>
+							<form method="post">
+								<button type="submit" asp-page-handler="Delete" asp-route-id="@review.ID" class="btn btn-danger">Delete</button>
+							</form>
+						</div>
+					}
+					@if (@review.Comment == null && @review.Rating != 0)
+					{
+						<div id="reviewGridCell">
+							<h3>@review.Beer.Name</h3>
+							<p>@review.Account.Name</p>
+							<p>Rated @review.Rating / 5!</p>
+							<p>@review.Created.ToString("yyyy-MM-dd HH:mm")</p>
+							<form method="post">
+								<button type="submit" asp-page-handler="Delete" asp-route-id="@review.ID" class="btn btn-danger">Delete</button>
+							</form>
+						</div>
+					}
+				}
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	<h1>
+		"ACCESS DENIED"
+	</h1>
+}

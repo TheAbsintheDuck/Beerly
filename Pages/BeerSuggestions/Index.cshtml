@@ -1,0 +1,71 @@
+﻿@page
+@model Backend_Task03.Pages.BeerSuggestions.IndexModel
+@inject Backend_Task03.Data.AccessControl AccessControl
+@{
+
+    ViewData["Title"] = "Beer Suggestions";
+}
+<body>
+	<div id="suggContainer">
+		<h1 class="display-4">Beer Suggestions</h1>
+		<p>Based on your favorite beer types, we recommend:</p>
+		<div id="suggBeerGrid">
+			@if (Model.Beers.Any())
+			{
+				foreach (var item in Model.Beers)
+				{
+					<div id="suggBeerContainer">
+						<div class="beerIndexCell">
+							<h3 id="beerName">@Html.DisplayFor(modelItem => item.Name)</h3>
+
+							<p id="beerCountry">(@Html.DisplayFor(modelItem => item.Country))</p>
+
+							<p id="beerBrewery">@Html.DisplayFor(modelItem => item.Brewery)</p>
+
+							<p id="beerPercentage">@Html.DisplayFor(modelItem => item.Percentage)%</p>
+
+                            <div id="beerImage">
+                                @if (item.PhotoPath == "")
+                                {
+                                    <img id="smBeerImage" src="~/imagesBeerly/@(item.Name).png" width="100px" />
+                                }
+                                else
+                                {
+                                    <img id="smBeerImage" src="@(item.PhotoPath)" width="100px" />
+                                }
+                            </div>
+
+                            <p id="beerType">@Html.DisplayFor(modelItem => item.Type)</p>
+
+							<div id="beerGoesWellWith">
+								@foreach (var food in new[] { "Chicken", "Meat", "Fish", "Vegetarian", "Dessert" })
+								{
+									if (item.GoesWellWith.Contains(food))
+									{
+										<img asp-append-version="true" name="Goesw" value="@food" src="../images/@(food.ToLower()).svg" style="width: 22px" />
+									}
+								}
+							</div>
+
+							<div id="beerRating">
+								<p id="ratingText">Our users give this beer a rating average of:</p>
+								@for (int i = 0; i < 5; i++)
+								{
+									<img class="row7@($"glass{i + 1}")" asp-append-version="true"
+							 src="@($"../images/{(item.Rating >= i + 0.5 ? "filled" : "empty")}.svg")" style="width: 30px" />
+								}
+							</div>
+							<button type="button" id="beerDetailsButton" onclick="location.href='@Url.Page("/Beers/Details", new { id = item.ID, name = item.Name })'">Details</button>
+						</div>
+					</div>
+				}
+			}
+			else
+			{
+				<div class="text-center">
+					<p>No beer suggestions at this time. Please add more beers to your favorites.</p>
+				</div>
+			}
+		</div>
+	</div>
+</body>

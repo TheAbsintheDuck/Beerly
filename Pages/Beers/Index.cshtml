@@ -1,0 +1,112 @@
+﻿@page
+@model Backend_Task03.Pages.Beers.IndexModel
+@inject Backend_Task03.Data.AccessControl AccessControl
+
+@{
+    ViewData["Title"] = "Beer List";
+}
+
+<div id="beerIndex">
+    <h1 id="beerHead">Beer</h1>
+
+    @*<p>*@
+    <form asp-page="Create" method="get" id="beerCreate">
+        @if (AccessControl.LoggedInAccountRole == "Admin")
+        {
+            <button type="submit" class="btn btn-primary">Create New</button>
+        }
+    </form>
+    @*</p>*@
+
+	@foreach (var item in Model.Beer)
+	{
+		<div class="beerIndexCell">
+			<h3 id="beerName">@Html.DisplayFor(modelItem => item.Name)</h3>
+
+			<p id="beerCountry">(@Html.DisplayFor(modelItem => item.Country))</p>
+
+			<p id="beerBrewery">@Html.DisplayFor(modelItem => item.Brewery)</p>
+
+			<p id="beerPercentage">@Html.DisplayFor(modelItem => item.Percentage)%</p>
+
+            <div id="beerImage">
+                @if (item.PhotoPath == "")
+                {
+                    <img id="smBeerImage" src="~/imagesBeerly/@(item.Name).png" width="100px" />
+                }
+                else
+                {
+                    <img id="smBeerImage" src="@(item.PhotoPath)" width="100px" />
+                }
+            </div>
+
+            <p id="beerType">@Html.DisplayFor(modelItem => item.Type)</p>
+
+            <div id="beerGoesWellWith">
+                @*@Html.DisplayFor(modelItem => item.GoesWellWith)*@
+                @foreach (var food in new[] { "Chicken", "Meat", "Fish", "Vegetarian", "Dessert" })
+                {
+                    if (item.GoesWellWith.Contains(food))
+                    {
+                        <img asp-append-version="true" name="Goesw" value="@food" src="../images/@(food.ToLower()).svg" style="width: 22px" />
+                    }
+                }
+            </div>
+
+            <div id="beerRating">
+
+                @for (int i = 0; i < 5; i++)
+                {
+                    @if (item.Rating != null)
+                    {
+                        <img class="@($"glass{i + 1}")" asp-append-version="true"
+                        src="@($"images/{(i < Math.Floor((decimal)item.Rating) ? "filled" : "empty")}.svg")"
+                             style="width: 30px" />
+                    }
+                }
+            </div>
+
+            <button type="button" id="beerDetailsButton" onclick="location.href='@Url.Page("./Details", new { id = item.ID, name = item.Name })'">Details</button>
+            <div id="beerFavoriteCell">
+                <div id="beerFavoriteCell">
+                    <form asp-page-handler="ToggleFavorite" method="post">
+                        <input type="hidden" name="beerId" value="@(item.ID)" />
+                        <input type="checkbox" id="@(item.ID)Checkbox" class="beerFavoriteCheckbox visually-hidden" onchange="this.form.submit()" @(Model.IsFavorite(item.ID) ? "checked" : "") />
+                        <label for="@(item.ID)Checkbox" class="beerFavoriteLabel">
+                            <span class="unfilledStar">
+                                <img class="beerlyStar" src="~/imagesBeerly/beerlyStarLH.png" alt="Not Filled Star">
+                            </span>
+                            <span class="filledStar">
+                                <img class="beerlyStar" class="checked" src="~/imagesBeerly/beerlyStarFav.png" alt="Filled Star">
+                            </span>
+                        </label>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const checkboxes = document.querySelectorAll('.beerFavoriteCheckbox');
+
+                checkboxes.forEach(function (checkbox) {
+                    const label = checkbox.nextElementSibling;
+
+                    checkbox.addEventListener('change', function () {
+                        const starUnselected = label.querySelector('.beerlyStar');
+                        const starSelected = label.querySelector('.beerlyStar.checked');
+
+                        if (checkbox.checked) {
+                            starUnselected.style.display = 'none';
+                            starSelected.style.display = 'grid';
+                        } else {
+                            starUnselected.style.display = 'grid';
+                            starSelected.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        </script>
+    }
+</div>
+

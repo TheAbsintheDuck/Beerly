@@ -1,0 +1,18 @@
+﻿@model List<Backend_Task03.Models.Beer>
+
+<form method="post">
+    <select name="beerType" class="SelectionBeer" aria-label="Filter 1">
+        <!-- Options here -->
+
+    </select>
+    <select name="foodType" class="SelectionFood" aria-label="Filter 2">
+        <!-- Options here -->
+    </select>
+    <input type="text" name="findBeer" class="SearchInputBar" placeholder="Search" aria-label="Search">
+    <button class="MainSearchButton" type="submit">Search</button>
+</form>
+
+@if (Model.Count > 0)
+{
+    <!-- Display search results -->
+}

@@ -1,0 +1,61 @@
+﻿@page
+@model Backend_Task03.Pages.Accounts.CreateModel
+@inject Backend_Task03.Data.AccessControl AccessControl
+
+@{
+	ViewData["Title"] = "Create";
+}
+<div class="adminGrid">
+	@if (AccessControl.LoggedInAccount.Role == "Admin" || AccessControl.LoggedInAccount.ID == Model.Account?.ID)
+	{
+		<h1>Create Account</h1>
+		<div class="editBeerGrid">
+			<div class="col-md-4">
+				<form method="post">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<div class="form-group">
+						<label asp-for="Account.OpenIDIssuer" class="control-label"></label>
+						<input asp-for="Account.OpenIDIssuer" class="form-control" />
+						<span asp-validation-for="Account.OpenIDIssuer" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="Account.OpenIDSubject" class="control-label"></label>
+						<input asp-for="Account.OpenIDSubject" class="form-control" />
+						<span asp-validation-for="Account.OpenIDSubject" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="Account.Name" class="control-label"></label>
+						<input asp-for="Account.Name" class="form-control" />
+						<span asp-validation-for="Account.Name" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="Account.Role" class="control-label"></label>
+						<input asp-for="Account.Role" class="form-control" />
+						<span asp-validation-for="Account.Role" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<button type="submit" value="Create" class="btn btn-primary">Create</button>
+					</div>
+				</form>
+				<div>
+					<button type="button" onclick="location.href='@Url.Page("Index")'" class="btn btn-primary">Back to List</button>
+				</div>
+
+			</div>
+		</div>
+
+
+
+		@section Scripts {
+		@{
+				await Html.RenderPartialAsync("_ValidationScriptsPartial");
+			}
+	}
+	}
+	else
+	{
+		<h1>
+			"ACCESS DENIED"
+		</h1>
+	}
+</div>

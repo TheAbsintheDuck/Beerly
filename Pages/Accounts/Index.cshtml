@@ -1,0 +1,49 @@
+﻿@page
+@model Backend_Task03.Pages.Accounts.IndexModel
+@inject Backend_Task03.Data.AccessControl AccessControl
+
+@{
+	ViewData["Title"] = "Index";
+}
+<div class="adminGrid">
+	@if (AccessControl.LoggedInAccountRole == "Admin")
+	{
+		<div id="adminGridTop">
+			<h1>Accounts</h1>
+
+			<div class="form-group">
+				<button type="button" onclick="location.href='@Url.Page("Create")'" class="btn btn-primary">Create New</button>
+			</div>
+		</div>
+
+		@foreach (var item in Model.Account)
+		{
+			<div class="adminAccountCell">
+
+				<h3>
+					@Html.DisplayFor(modelItem => item.Name)
+				</h3>
+				<p>
+					Login Type: @Html.DisplayFor(modelItem => item.OpenIDIssuer)
+				</p>
+				<p>
+					ID: @Html.DisplayFor(modelItem => item.OpenIDSubject)
+				</p>
+				<p>
+					Role: @Html.DisplayFor(modelItem => item.Role)
+				</p>
+				<div id="accountButtons">
+					<form method="post">
+						<button type="submit" asp-page-handler="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</button>
+					</form>
+				</div>
+			</div>
+		}
+	}
+	else
+	{
+		<h1>
+			"ACCESS DENIED"
+		</h1>
+	}
+</div>

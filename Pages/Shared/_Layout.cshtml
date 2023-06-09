@@ -1,0 +1,85 @@
+﻿@using Backend_Task03.Pages.Shared.Components.LoginMenu;
+@inject Backend_Task03.Data.AccessControl accessControl
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Beerly - Probably the best beer reviews in the world!">
+	<title>@ViewData["Title"]</title>
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+	<link rel="stylesheet" href="~/css/homepage.css" />
+	<script src="~/js/site.js" asp-append-version="true" defer></script>
+
+	@await RenderSectionAsync("Scripts", required: false)
+</head>
+<body>
+	<header>
+		<environment names="Development">
+			@await Component.InvokeAsync(nameof(FakeLoginMenu))
+		</environment>
+
+		<div class="containerMain">
+			<div class="header">
+
+				<p class="WelcomeUserText">Inlogged as: @accessControl.LoggedInAccountName</p>
+			</div>
+			<div id="beerlyLogoContainer">
+			<a asp-page="/Index">
+				<img id="beerlyLogo" src="~/imagesBeerly/beerlylogo1002.png">
+			</a>
+			</div>	
+			<div class="AllSearch">
+				<form method="get" action="/Beers" class="AllSearchRight">
+					<select class="SelectionBeer" aria-label="Filter 1" id="allsearchCol1" name="SelectedBeerType">
+						<option selected>Beer</option>
+						<option value="Lager">Lager</option>
+						<option value="Stout">Stout</option>
+						<option value="IPA">IPA</option>
+						<option value="Brown Ale">Brown Ale</option>
+						<option value="Wheat Ale">Wheat Ale</option>
+						<option value="Belgian Ale">Belgian Ale</option>
+						<option value="IPA">IPA</option>
+						<option value="Kolsch">Kolsch</option>
+						<option value="Imperial Stout">Imperial Stout</option>
+						<option value="Porter">Porter</option>
+						<option value="Sour">Sour</option>
+						<option value="Tripel">Tripel</option>
+						<option value="Gose">Gose</option>
+						<option value="Oktoberfest">Oktoberfest</option>
+					</select>
+					<select class="SelectionFood" aria-label="Filter 2" id="allsearchCol2" name="SelectedFoodType">
+						<option selected>Food</option>
+						<option value="Fish">Fish</option>
+						<option value="Meat">Meat</option>
+						<option value="Chicken">Chicken</option>
+						<option value="Vegetarian">Vegetarian</option>
+						<option value="Dessert">Dessert</option>
+					</select>
+					<input type="text" name="searchInput" class="SearchInputBar" placeholder="Search" aria-label="Search" id="allsearchCol3">
+					<button class="MainSearchButton" type="submit" id="allsearchCol4">Search</button>
+				</form>
+			</div>
+
+
+			<div class="NavigationPages">
+				@if (accessControl.LoggedInAccountRole == "Admin")
+				{
+					<button type="button" onclick="location.href='/Accounts/Index?id=@accessControl.LoggedInAccountID'">MyPage</button>
+				}
+				else
+				{
+					<button type="button" onclick="location.href='/Accounts/Details?id=@accessControl.LoggedInAccountID'">MyPage</button>
+				}
+				<button type="button" onclick="location.href='/Beers'">BeerList</button>
+				<button type="button" onclick="location.href='/BeerSuggestions'">BeerSuggestions</button>
+			</div>
+		</div>
+
+	</header>
+	<main>
+		@RenderBody()
+	</main>
+</body>
+</html>
